@@ -15,9 +15,10 @@ export interface Student {
   tiktok_url: string | null;
   snapchat_url: string | null;
   notes: string | null;
+  is_delete: boolean;
   created_at: string;
   updated_at: string;
 }
 
-export type StudentInsert = Omit<Student, 'id' | 'created_at' | 'updated_at'>;
+export type StudentInsert = Omit<Student, 'id' | 'is_delete' | 'created_at' | 'updated_at'>;
 export type StudentUpdate = Partial<StudentInsert>;

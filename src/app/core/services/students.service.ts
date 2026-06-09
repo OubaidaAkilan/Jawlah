@@ -12,6 +12,7 @@ export class StudentsService {
     const { data, error } = await this.supabase
       .from(this.table)
       .select('*')
+      .eq('is_delete', false)
       .order('created_at', { ascending: false });
 
     if (error) throw error;
@@ -23,6 +24,7 @@ export class StudentsService {
       .from(this.table)
       .select('*')
       .eq('id', id)
+      .eq('is_delete', false)
       .maybeSingle();
 
     if (error) throw error;
@@ -53,7 +55,11 @@ export class StudentsService {
   }
 
   async delete(id: string): Promise<void> {
-    const { error } = await this.supabase.from(this.table).delete().eq('id', id);
+    const { error } = await this.supabase
+      .from(this.table)
+      .update({ is_delete: true })
+      .eq('id', id);
+
     if (error) throw error;
   }
 
