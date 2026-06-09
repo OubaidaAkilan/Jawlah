@@ -1,0 +1,21 @@
+// Elements (UI)
+$color-background: #55423d;
+$color-headline: #fffffe;
+$color-paragraph: #fff3ec;
+$color-button: #ffc0ad;
+$color-button-text: #271c19;
+
+// Illustration
+$color-stroke: #140d0b;
+$color-illustration-main: #fff3ec;
+$color-highlight: #e78fb3;
+$color-secondary: #ffc0ad;
+$color-tertiary: #9656a1;
+
+// Semantic aliases
+$color-text-primary: $color-headline;
+$color-text-body: $color-paragraph;
+$color-surface: $color-background;
+$color-accent: $color-tertiary;
+$color-accent-soft: $color-highlight;
+$color-border: $color-stroke;

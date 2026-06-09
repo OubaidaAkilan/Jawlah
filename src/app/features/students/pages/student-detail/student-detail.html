@@ -1,0 +1,167 @@
+<section class="student-detail">
+  <a class="student-detail__back" routerLink="/students">← رجوع للقائمة</a>
+
+  @if (loading()) {
+    <p class="student-detail__message">جاري التحميل...</p>
+  } @else if (notFound()) {
+    <p class="student-detail__message">الطالب غير موجود</p>
+  } @else if (student(); as s) {
+    <div class="student-detail__card">
+      <div class="student-detail__card-corner">
+        <a
+          class="student-detail__icon-btn"
+          [routerLink]="['/students', s.id, 'edit']"
+          aria-label="تعديل"
+        >
+          <span class="material-icons" aria-hidden="true">edit</span>
+        </a>
+        <button
+          type="button"
+          class="student-detail__icon-btn student-detail__icon-btn--delete"
+          aria-label="حذف"
+          (click)="openDeleteConfirm()"
+        >
+          <span class="material-icons" aria-hidden="true">delete</span>
+        </button>
+      </div>
+
+      <div class="student-detail__profile">
+        <app-student-avatar [student]="s" size="large" />
+        <h1 class="student-detail__name">{{ s.full_name }}</h1>
+      </div>
+
+      <div class="student-detail__actions">
+        <app-action-icon-button type="whatsapp" label="واتساب" [href]="getWhatsAppUrl(s)" />
+        <app-action-icon-button type="call" label="اتصال" [href]="getCallUrl(s)" />
+        <app-action-icon-button
+          type="map"
+          label="الخريطة"
+          [href]="getMapUrl(s)"
+          [unavailableTitle]="mapUnavailableTitle"
+          [unavailableMessage]="mapUnavailableMessage"
+        />
+      </div>
+
+      <dl class="student-detail__fields">
+        @if (s.age) {
+          <div class="student-detail__field">
+            <dt>العمر</dt>
+            <dd>{{ s.age }}</dd>
+          </div>
+        }
+
+        @if (s.grade?.trim()) {
+          <div class="student-detail__field">
+            <dt>الصف</dt>
+            <dd>{{ s.grade }}</dd>
+          </div>
+        }
+
+        @if (s.school_name?.trim()) {
+          <div class="student-detail__field">
+            <dt>المدرسة</dt>
+            <dd>{{ s.school_name }}</dd>
+          </div>
+        }
+
+        @if (s.student_phone_number) {
+          <div class="student-detail__field">
+            <dt>هاتف الطالب</dt>
+            <dd>{{ toLocalPhone(s.student_phone_number) }}</dd>
+          </div>
+        }
+
+        @if (hasParentName(s.parent_name)) {
+          <div class="student-detail__field">
+            <dt>ولي الأمر</dt>
+            <dd>{{ s.parent_name }}</dd>
+          </div>
+        }
+
+        @if (s.parent_phone_number) {
+          <div class="student-detail__field">
+            <dt>هاتف ولي الأمر</dt>
+            <dd>{{ toLocalPhone(s.parent_phone_number) }}</dd>
+          </div>
+        }
+
+        @if (s.home_address?.trim()) {
+          <div class="student-detail__field">
+            <dt>العنوان</dt>
+            <dd>{{ s.home_address }}</dd>
+          </div>
+        }
+
+        @if (isValidUrl(s.google_maps_link)) {
+          <div class="student-detail__field">
+            <dt>رابط الخريطة</dt>
+            <dd>
+              <a [href]="s.google_maps_link!" target="_blank" rel="noopener noreferrer">
+                فتح في خرائط جوجل
+              </a>
+            </dd>
+          </div>
+        }
+
+        @if (isValidUrl(s.facebook_url)) {
+          <div class="student-detail__field">
+            <dt>فيسبوك</dt>
+            <dd>
+              <a [href]="s.facebook_url!" target="_blank" rel="noopener noreferrer">فتح الحساب</a>
+            </dd>
+          </div>
+        }
+
+        @if (isValidUrl(s.instagram_url)) {
+          <div class="student-detail__field">
+            <dt>انستغرام</dt>
+            <dd>
+              <a [href]="s.instagram_url!" target="_blank" rel="noopener noreferrer">فتح الحساب</a>
+            </dd>
+          </div>
+        }
+
+        @if (isValidUrl(s.tiktok_url)) {
+          <div class="student-detail__field">
+            <dt>تيك توك</dt>
+            <dd>
+              <a [href]="s.tiktok_url!" target="_blank" rel="noopener noreferrer">فتح الحساب</a>
+            </dd>
+          </div>
+        }
+
+        @if (isValidUrl(s.snapchat_url)) {
+          <div class="student-detail__field">
+            <dt>سناب شات</dt>
+            <dd>
+              <a [href]="s.snapchat_url!" target="_blank" rel="noopener noreferrer">فتح الحساب</a>
+            </dd>
+          </div>
+        }
+
+        @if (s.notes?.trim()) {
+          <div class="student-detail__field">
+            <dt>ملاحظات</dt>
+            <dd>{{ s.notes }}</dd>
+          </div>
+        }
+      </dl>
+    </div>
+
+    @if (deleteError()) {
+      <p class="student-detail__error">{{ deleteError() }}</p>
+    }
+
+    <app-confirm-dialog
+      [open]="deleteConfirmOpen()"
+      title="حذف الطالب"
+      [message]="'هل أنت متأكد من حذف ' + s.full_name + '؟ لا يمكن التراجع عن هذا الإجراء.'"
+      confirmLabel="نعم، احذف"
+      cancelLabel="إلغاء"
+      variant="danger"
+      [loading]="deleting()"
+      (confirmed)="onDeleteConfirmed()"
+      (cancelled)="onDeleteCancelled()"
+    />
+  }
+</section>

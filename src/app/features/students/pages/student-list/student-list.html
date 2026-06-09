@@ -1,0 +1,24 @@
+<section class="student-list">
+  <header class="student-list__header">
+    <h1 class="student-list__title">الطلاب</h1>
+    <a class="student-list__add-btn" routerLink="/students/new">
+      <span class="student-list__add-icon" aria-hidden="true">+</span>
+      <span>إضافة طالب</span>
+    </a>
+    <p class="student-list__subtitle">{{ students().length }} طالب</p>
+  </header>
+
+  @if (loading()) {
+    <p class="student-list__message">جاري التحميل...</p>
+  } @else if (error()) {
+    <p class="student-list__message student-list__message--error">تعذر تحميل البيانات</p>
+  } @else if (students().length === 0) {
+    <p class="student-list__message">لا يوجد طلاب</p>
+  } @else {
+    <div class="student-list__grid">
+      @for (student of students(); track student.id) {
+        <app-student-card [student]="student" />
+      }
+    </div>
+  }
+</section>

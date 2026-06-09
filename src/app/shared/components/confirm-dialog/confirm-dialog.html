@@ -1,0 +1,31 @@
+@if (open()) {
+  <div class="confirm-dialog__backdrop" (click)="onBackdropClick($event)">
+    <div class="confirm-dialog__card" role="dialog" aria-modal="true" [attr.aria-label]="title()">
+      <h2 class="confirm-dialog__title">{{ title() }}</h2>
+      <p class="confirm-dialog__message">{{ message() }}</p>
+
+      <div class="confirm-dialog__actions" [class.confirm-dialog__actions--single]="alertOnly()">
+        @if (!alertOnly()) {
+          <button
+            type="button"
+            class="confirm-dialog__btn confirm-dialog__btn--cancel"
+            [disabled]="loading()"
+            (click)="cancelled.emit()"
+          >
+            {{ cancelLabel() }}
+          </button>
+        }
+        <button
+          type="button"
+          class="confirm-dialog__btn"
+          [class.confirm-dialog__btn--danger]="variant() === 'danger'"
+          [class.confirm-dialog__btn--confirm]="variant() === 'default'"
+          [disabled]="loading()"
+          (click)="confirmed.emit()"
+        >
+          {{ loading() ? 'جاري التنفيذ...' : confirmLabel() }}
+        </button>
+      </div>
+    </div>
+  </div>
+}

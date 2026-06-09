@@ -1,0 +1,162 @@
+<section class="student-form">
+  <a class="student-form__back" [routerLink]="cancelLink">
+    {{ isEdit() ? '← رجوع للتفاصيل' : '← رجوع للقائمة' }}
+  </a>
+
+  <div class="student-form__card">
+    <h1 class="student-form__title">
+      {{ isEdit() ? 'تعديل بيانات الطالب' : 'إضافة طالب جديد' }}
+    </h1>
+
+    @if (loading()) {
+      <p class="student-form__loading">جاري التحميل...</p>
+    } @else {
+      <form class="student-form__form" [formGroup]="form" (ngSubmit)="onSubmit()">
+        <fieldset class="student-form__section">
+          <legend>بيانات الطالب</legend>
+
+          <label class="student-form__field">
+            <span>الاسم الرباعي *</span>
+            <input type="text" formControlName="full_name" autocomplete="name" />
+            @if (isInvalid('full_name')) {
+              <small class="student-form__error">الاسم مطلوب</small>
+            }
+          </label>
+
+          <label class="student-form__field">
+            <span>العمر *</span>
+            <input type="number" formControlName="age" min="3" max="18" inputmode="numeric" />
+            @if (isInvalid('age')) {
+              <small class="student-form__error">أدخل عمراً بين 3 و 18</small>
+            }
+          </label>
+
+          <label class="student-form__field">
+            <span>الصف *</span>
+            <input type="text" formControlName="grade" />
+            @if (isInvalid('grade')) {
+              <small class="student-form__error">الصف مطلوب</small>
+            }
+          </label>
+
+          <label class="student-form__field">
+            <span>المدرسة *</span>
+            <input type="text" formControlName="school_name" />
+            @if (isInvalid('school_name')) {
+              <small class="student-form__error">المدرسة مطلوبة</small>
+            }
+          </label>
+
+          <label class="student-form__field">
+            <span>هاتف الطالب</span>
+            <input
+              type="tel"
+              formControlName="student_phone_number"
+              placeholder="0780110768"
+              dir="ltr"
+            />
+          </label>
+
+          <label class="student-form__field">
+            <span>رابط الصورة</span>
+            <input type="url" formControlName="student_photo" placeholder="https://..." dir="ltr" />
+          </label>
+        </fieldset>
+
+        <fieldset class="student-form__section">
+          <legend>بيانات ولي الأمر</legend>
+
+          <label class="student-form__field">
+            <span>اسم ولي الأمر *</span>
+            <input type="text" formControlName="parent_name" />
+            @if (isInvalid('parent_name')) {
+              <small class="student-form__error">اسم ولي الأمر مطلوب</small>
+            }
+          </label>
+
+          <label class="student-form__field">
+            <span>هاتف ولي الأمر *</span>
+            <input
+              type="tel"
+              formControlName="parent_phone_number"
+              placeholder="0780110768"
+              dir="ltr"
+            />
+            @if (isInvalid('parent_phone_number')) {
+              <small class="student-form__error">رقم الهاتف مطلوب</small>
+            }
+          </label>
+        </fieldset>
+
+        <fieldset class="student-form__section">
+          <legend>العنوان والموقع</legend>
+
+          <label class="student-form__field">
+            <span>العنوان *</span>
+            <textarea formControlName="home_address" rows="3"></textarea>
+            @if (isInvalid('home_address')) {
+              <small class="student-form__error">العنوان مطلوب</small>
+            }
+          </label>
+
+          <label class="student-form__field">
+            <span>رابط خرائط جوجل</span>
+            <input type="url" formControlName="google_maps_link" placeholder="https://..." dir="ltr" />
+          </label>
+        </fieldset>
+
+        <fieldset class="student-form__section">
+          <legend>حسابات التواصل (اختياري)</legend>
+
+          <label class="student-form__field">
+            <span>فيسبوك</span>
+            <input type="url" formControlName="facebook_url" placeholder="https://..." dir="ltr" />
+          </label>
+
+          <label class="student-form__field">
+            <span>انستغرام</span>
+            <input type="url" formControlName="instagram_url" placeholder="https://..." dir="ltr" />
+          </label>
+
+          <label class="student-form__field">
+            <span>تيك توك</span>
+            <input type="url" formControlName="tiktok_url" placeholder="https://..." dir="ltr" />
+          </label>
+
+          <label class="student-form__field">
+            <span>سناب شات</span>
+            <input type="url" formControlName="snapchat_url" placeholder="https://..." dir="ltr" />
+          </label>
+
+          <label class="student-form__field">
+            <span>ملاحظات</span>
+            <textarea formControlName="notes" rows="3"></textarea>
+          </label>
+        </fieldset>
+
+        @if (error()) {
+          <p class="student-form__submit-error">{{ error() }}</p>
+        }
+
+        <div class="student-form__actions">
+          <button class="student-form__submit" type="submit" [disabled]="submitting()">
+            {{ submitting() ? 'جاري الحفظ...' : (isEdit() ? 'حفظ التغييرات' : 'حفظ الطالب') }}
+          </button>
+          <a class="student-form__cancel" [routerLink]="cancelLink">إلغاء</a>
+        </div>
+      </form>
+    }
+  </div>
+
+  <app-confirm-dialog
+    [open]="saveConfirmOpen()"
+    title="حفظ التغييرات"
+    [message]="'هل تريد حفظ التعديلات على بيانات ' + studentName() + '؟'"
+    confirmLabel="نعم، احفظ"
+    cancelLabel="إلغاء"
+    variant="default"
+    [loading]="submitting()"
+    (confirmed)="onSaveConfirmed()"
+    (cancelled)="onSaveCancelled()"
+  />
+</section>

@@ -1,0 +1,35 @@
+.student-card {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
+  background-color: var(--color-illustration-main);
+  border: 2px solid var(--color-stroke);
+  border-radius: 1.5rem;
+  box-shadow: 0 6px 0 var(--color-stroke);
+
+  &__link {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+  }
+
+  &__name {
+    margin: 0;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--color-button-text);
+    line-height: 1.4;
+  }
+
+  &__actions {
+    display: flex;
+    gap: 0.625rem;
+    justify-content: flex-start;
+  }
+}

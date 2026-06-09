@@ -1,0 +1,28 @@
+<article class="student-card">
+  <a class="student-card__link" [routerLink]="['/students', student().id]">
+    <div class="student-card__header">
+      <app-student-avatar [student]="student()" />
+      <h2 class="student-card__name">{{ student().full_name }}</h2>
+    </div>
+  </a>
+
+  <div class="student-card__actions">
+    <app-action-icon-button
+      type="whatsapp"
+      label="واتساب"
+      [href]="getWhatsAppUrl(student())"
+    />
+    <app-action-icon-button
+      type="call"
+      label="اتصال"
+      [href]="getCallUrl(student())"
+    />
+    <app-action-icon-button
+      type="map"
+      label="الخريطة"
+      [href]="getMapUrl(student())"
+      [unavailableTitle]="mapUnavailableTitle"
+      [unavailableMessage]="mapUnavailableMessage"
+    />
+  </div>
+</article>

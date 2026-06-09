@@ -1,0 +1,16 @@
+<div
+  class="student-avatar"
+  [class.student-avatar--large]="size() === 'large'"
+  [style.background-color]="showPhoto() ? null : bgColor()"
+>
+  @if (showPhoto()) {
+    <img
+      class="student-avatar__image"
+      [src]="photoUrl()!"
+      [alt]="student().full_name"
+      (error)="onImageError()"
+    />
+  } @else {
+    <span class="student-avatar__letter" [style.color]="textColor()">{{ letter() }}</span>
+  }
+</div>
