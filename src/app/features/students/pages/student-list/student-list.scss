@@ -24,6 +24,140 @@
     color: var(--color-paragraph);
   }
 
+  &__filters {
+    display: flex;
+    flex-direction: column;
+    gap: 0.875rem;
+    margin-bottom: 1.25rem;
+    padding: 0.875rem;
+    background-color: var(--color-illustration-main);
+    border: 2px solid var(--color-stroke);
+    border-radius: 1.25rem;
+    box-shadow: 0 6px 0 var(--color-stroke);
+  }
+
+  &__search {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+  }
+
+  &__search-label {
+    font-size: 0.8125rem;
+    font-weight: 700;
+    color: var(--color-button-text);
+  }
+
+  &__search-field {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  &__search-input {
+    width: 100%;
+    min-height: 3rem;
+    padding: 0.75rem 2.75rem 0.75rem 1rem;
+    border: 2px solid var(--color-stroke);
+    border-radius: 1rem;
+    background-color: var(--color-background);
+    color: var(--color-headline);
+    font-size: 1rem;
+    font-family: inherit;
+    -webkit-tap-highlight-color: transparent;
+
+    &::placeholder {
+      color: var(--color-paragraph);
+      opacity: 0.7;
+    }
+  }
+
+  &__search-clear {
+    position: absolute;
+    inset-inline-end: 0.5rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    padding: 0;
+    border: 2px solid var(--color-stroke);
+    border-radius: 999px;
+    background-color: var(--color-button);
+    color: var(--color-button-text);
+    font-size: 1.25rem;
+    font-weight: 700;
+    line-height: 1;
+    font-family: inherit;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+
+    &:active {
+      transform: scale(0.95);
+    }
+  }
+
+  &__fieldset {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    min-width: 0;
+
+    legend {
+      margin-bottom: 0.5rem;
+      font-size: 0.8125rem;
+      font-weight: 700;
+      color: var(--color-button-text);
+    }
+  }
+
+  &__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+
+    @media (max-width: 479px) {
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      margin-inline: -0.25rem;
+      padding-inline: 0.25rem;
+      padding-bottom: 0.125rem;
+
+      &::-webkit-scrollbar {
+        display: none;
+      }
+    }
+  }
+
+  &__chip {
+    flex-shrink: 0;
+    min-height: 2.75rem;
+    padding: 0.5rem 0.875rem;
+    border: 2px solid var(--color-stroke);
+    border-radius: 999px;
+    background-color: var(--color-background);
+    color: var(--color-headline);
+    font-size: 0.875rem;
+    font-weight: 700;
+    font-family: inherit;
+    line-height: 1.2;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: transform 0.12s ease;
+
+    &:active {
+      transform: scale(0.97);
+    }
+
+    &--active {
+      background-color: var(--color-tertiary);
+      color: var(--color-headline);
+      box-shadow: 0 3px 0 var(--color-stroke);
+    }
+  }
+
   &__message {
     text-align: center;
     padding: 2rem 1rem;
@@ -60,6 +194,18 @@
     padding: 2rem;
   }
 
+  &__actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.625rem;
+
+    @media (min-width: 640px) {
+      flex-direction: row;
+      justify-content: center;
+    }
+  }
+
+  &__nav-btn,
   &__add-btn {
     display: inline-flex;
     align-items: center;
@@ -70,8 +216,6 @@
     padding: 0.75rem 1.25rem;
     border: 2px solid var(--color-stroke);
     border-radius: 1rem;
-    background-color: var(--color-highlight);
-    color: var(--color-button-text);
     font-size: 1rem;
     font-weight: 800;
     line-height: 1;
@@ -85,9 +229,18 @@
 
     @media (min-width: 640px) {
       width: auto;
-      align-self: center;
-      min-width: 12rem;
+      min-width: 10rem;
     }
+  }
+
+  &__nav-btn {
+    background-color: var(--color-tertiary);
+    color: var(--color-headline);
+  }
+
+  &__add-btn {
+    background-color: var(--color-highlight);
+    color: var(--color-button-text);
   }
 
   &__add-icon {

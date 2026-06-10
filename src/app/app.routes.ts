@@ -10,6 +10,13 @@ export const routes: Routes = [
       ),
   },
   {
+    path: 'attendance',
+    loadComponent: () =>
+      import('./features/students/pages/attendance-list/attendance-list').then(
+        (m) => m.AttendanceList
+      ),
+  },
+  {
     path: 'students/new',
     loadComponent: () =>
       import('./features/students/pages/student-form/student-form').then(

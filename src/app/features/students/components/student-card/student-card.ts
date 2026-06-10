@@ -1,6 +1,8 @@
 import { Component, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { AttendanceStatus } from '../../../../core/models/attendance.model';
 import { Student } from '../../../../core/models/student.model';
+import { attendanceStatusLabel } from '../../utils/attendance.util';
 import {
   getCallUrl,
   getMapUrl,
@@ -19,7 +21,10 @@ import { StudentAvatar } from '../student-avatar/student-avatar';
 })
 export class StudentCard {
   readonly student = input.required<Student>();
+  readonly attendanceStatus = input<AttendanceStatus | null>(null);
+  readonly absenceReason = input<string | null>(null);
 
+  protected readonly statusLabel = attendanceStatusLabel;
   protected getWhatsAppUrl = getWhatsAppUrl;
   protected getCallUrl = getCallUrl;
   protected getMapUrl = getMapUrl;

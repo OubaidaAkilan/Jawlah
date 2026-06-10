@@ -14,11 +14,12 @@ import {
   MAP_UNAVAILABLE_TITLE,
 } from '../../utils/student-links.util';
 import { ActionIconButton } from '../../components/action-icon-button/action-icon-button';
+import { StudentAttendance } from '../../components/student-attendance/student-attendance';
 import { StudentAvatar } from '../../components/student-avatar/student-avatar';
 
 @Component({
   selector: 'app-student-detail',
-  imports: [RouterLink, StudentAvatar, ActionIconButton, ConfirmDialog],
+  imports: [RouterLink, StudentAvatar, ActionIconButton, StudentAttendance, ConfirmDialog],
   templateUrl: './student-detail.html',
   styleUrl: './student-detail.scss',
 })

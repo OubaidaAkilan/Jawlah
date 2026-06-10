@@ -1,0 +1,220 @@
+.attendance-list {
+  padding: 1rem;
+  padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  padding-left: max(1rem, env(safe-area-inset-left));
+  padding-right: max(1rem, env(safe-area-inset-right));
+  min-height: 100dvh;
+  max-width: 48rem;
+  margin-inline: auto;
+
+  &__header {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.625rem;
+    margin-bottom: 1rem;
+    text-align: center;
+  }
+
+  &__back {
+    align-self: flex-start;
+    min-height: 2.75rem;
+    padding: 0.5rem 0.875rem;
+    border: 2px solid var(--color-stroke);
+    border-radius: 1rem;
+    background-color: var(--color-button);
+    color: var(--color-button-text);
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-decoration: none;
+    box-shadow: 0 4px 0 var(--color-stroke);
+    -webkit-tap-highlight-color: transparent;
+
+    &:active {
+      transform: translateY(2px);
+      box-shadow: 0 2px 0 var(--color-stroke);
+    }
+  }
+
+  &__title {
+    margin: 0;
+    font-size: clamp(1.5rem, 5vw, 1.75rem);
+    font-weight: 800;
+    color: var(--color-headline);
+  }
+
+  &__subtitle {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--color-paragraph);
+  }
+
+  &__filters {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    gap: 0.875rem;
+    margin-bottom: 1rem;
+    padding: 0.875rem;
+    background-color: var(--color-illustration-main);
+    border: 2px solid var(--color-stroke);
+    border-radius: 1.25rem;
+    box-shadow: 0 6px 0 var(--color-stroke);
+  }
+
+  &__field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+
+    span {
+      font-size: 0.8125rem;
+      font-weight: 700;
+      color: var(--color-button-text);
+    }
+
+    input {
+      width: 100%;
+      min-height: 3rem;
+      padding: 0.75rem 1rem;
+      border: 2px solid var(--color-stroke);
+      border-radius: 1rem;
+      background-color: var(--color-background);
+      color: var(--color-headline);
+      font-size: 1rem;
+      font-family: inherit;
+      -webkit-tap-highlight-color: transparent;
+    }
+  }
+
+  &__fieldset {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    min-width: 0;
+
+    legend {
+      margin-bottom: 0.5rem;
+      font-size: 0.8125rem;
+      font-weight: 700;
+      color: var(--color-button-text);
+    }
+  }
+
+  &__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+
+    @media (max-width: 479px) {
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      margin-inline: -0.25rem;
+      padding-inline: 0.25rem;
+      padding-bottom: 0.125rem;
+
+      &::-webkit-scrollbar {
+        display: none;
+      }
+    }
+  }
+
+  &__chip {
+    flex-shrink: 0;
+    min-height: 2.75rem;
+    padding: 0.5rem 0.875rem;
+    border: 2px solid var(--color-stroke);
+    border-radius: 999px;
+    background-color: var(--color-background);
+    color: var(--color-headline);
+    font-size: 0.875rem;
+    font-weight: 700;
+    font-family: inherit;
+    line-height: 1.2;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: transform 0.12s ease;
+
+    &:active {
+      transform: scale(0.97);
+    }
+
+    &--active {
+      background-color: var(--color-tertiary);
+      color: var(--color-headline);
+      box-shadow: 0 3px 0 var(--color-stroke);
+    }
+  }
+
+  &__message {
+    text-align: center;
+    padding: 2rem 0.5rem;
+    color: var(--color-paragraph);
+    font-size: 0.95rem;
+
+    &--error {
+      color: var(--color-highlight);
+    }
+  }
+
+  &__grid {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: 1fr;
+
+    @media (min-width: 640px) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1.25rem;
+    }
+  }
+
+  @media (min-width: 640px) {
+    padding: 1.25rem;
+    max-width: 52rem;
+
+    &__filters {
+      padding: 1rem;
+      border-radius: 1.5rem;
+    }
+
+    &__field--date {
+      max-width: 14rem;
+    }
+  }
+
+  @media (min-width: 768px) {
+    padding: 1.5rem;
+
+    &__filters {
+      display: grid;
+      grid-template-columns: 12rem 1fr;
+      grid-template-areas:
+        'date program'
+        'date status';
+      gap: 0.875rem 1rem;
+      align-items: start;
+    }
+
+    &__field--date {
+      grid-area: date;
+      max-width: none;
+    }
+
+    &__fieldset:first-of-type {
+      grid-area: program;
+    }
+
+    &__fieldset:last-of-type {
+      grid-area: status;
+    }
+
+    &__chips {
+      flex-wrap: wrap;
+      overflow: visible;
+    }
+  }
+}

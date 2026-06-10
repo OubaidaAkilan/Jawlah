@@ -28,6 +28,23 @@
       <div class="student-detail__profile">
         <app-student-avatar [student]="s" size="large" />
         <h1 class="student-detail__name">{{ s.full_name }}</h1>
+
+        @if (s.is_unassigned_program || s.is_summer_program || s.is_saturday_program) {
+          <div class="student-detail__programs">
+            @if (s.is_unassigned_program) {
+              <span class="student-detail__program-badge student-detail__program-badge--unassigned">
+                غير مسجل في برنامج
+              </span>
+            } @else {
+              @if (s.is_summer_program) {
+                <span class="student-detail__program-badge">برنامج الصيف</span>
+              }
+              @if (s.is_saturday_program) {
+                <span class="student-detail__program-badge">برنامج السبت</span>
+              }
+            }
+          </div>
+        }
       </div>
 
       <div class="student-detail__actions">
@@ -146,6 +163,8 @@
           </div>
         }
       </dl>
+
+      <app-student-attendance [studentId]="s.id" />
     </div>
 
     @if (deleteError()) {

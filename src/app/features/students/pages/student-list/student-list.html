@@ -1,12 +1,58 @@
 <section class="student-list">
   <header class="student-list__header">
     <h1 class="student-list__title">الطلاب</h1>
-    <a class="student-list__add-btn" routerLink="/students/new">
-      <span class="student-list__add-icon" aria-hidden="true">+</span>
-      <span>إضافة طالب</span>
-    </a>
-    <p class="student-list__subtitle">{{ students().length }} طالب</p>
+    <div class="student-list__actions">
+      <a class="student-list__nav-btn" routerLink="/attendance">الحضور</a>
+      <a class="student-list__add-btn" routerLink="/students/new">
+        <span class="student-list__add-icon" aria-hidden="true">+</span>
+        <span>إضافة طالب</span>
+      </a>
+    </div>
+    <p class="student-list__subtitle">{{ filteredStudents().length }} طالب</p>
   </header>
+
+  @if (!loading() && !error() && students().length > 0) {
+    <div class="student-list__filters">
+      <label class="student-list__search">
+        <span class="student-list__search-label">بحث بالاسم</span>
+        <div class="student-list__search-field">
+          <input
+            class="student-list__search-input"
+            type="search"
+            placeholder="ابحث عن طالب..."
+            [value]="searchQuery()"
+            (input)="onSearchInput($event)"
+          />
+          @if (searchQuery()) {
+            <button
+              type="button"
+              class="student-list__search-clear"
+              aria-label="مسح البحث"
+              (click)="clearSearch()"
+            >
+              ×
+            </button>
+          }
+        </div>
+      </label>
+
+      <fieldset class="student-list__fieldset">
+        <legend>البرنامج</legend>
+        <div class="student-list__chips" role="group" aria-label="البرنامج">
+          @for (option of programOptions; track option.value) {
+            <button
+              type="button"
+              class="student-list__chip"
+              [class.student-list__chip--active]="program() === option.value"
+              (click)="setProgram(option.value)"
+            >
+              {{ option.label }}
+            </button>
+          }
+        </div>
+      </fieldset>
+    </div>
+  }
 
   @if (loading()) {
     <p class="student-list__message">جاري التحميل...</p>
@@ -14,9 +60,17 @@
     <p class="student-list__message student-list__message--error">تعذر تحميل البيانات</p>
   } @else if (students().length === 0) {
     <p class="student-list__message">لا يوجد طلاب</p>
+  } @else if (filteredStudents().length === 0) {
+    <p class="student-list__message">
+      @if (searchQuery().trim()) {
+        لا يوجد نتائج للبحث
+      } @else {
+        لا يوجد طلاب لهذا البرنامج
+      }
+    </p>
   } @else {
     <div class="student-list__grid">
-      @for (student of students(); track student.id) {
+      @for (student of filteredStudents(); track student.id) {
         <app-student-card [student]="student" />
       }
     </div>

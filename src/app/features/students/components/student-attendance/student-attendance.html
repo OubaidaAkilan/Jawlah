@@ -1,0 +1,57 @@
+<section class="student-attendance">
+  <h2 class="student-attendance__title">سجل الحضور</h2>
+
+  <form class="student-attendance__form" [formGroup]="form" (ngSubmit)="onSubmit()">
+    <label class="student-attendance__field">
+      <span>التاريخ</span>
+      <input type="date" formControlName="date" />
+    </label>
+
+    <label class="student-attendance__field">
+      <span>الحالة</span>
+      <select formControlName="status">
+        @for (option of statusOptions; track option.value) {
+          <option [value]="option.value">{{ option.label }}</option>
+        }
+      </select>
+    </label>
+
+    @if (showAbsenceReason) {
+      <label class="student-attendance__field">
+        <span>سبب الغياب *</span>
+        <textarea formControlName="absence_reason" rows="2"></textarea>
+      </label>
+    }
+
+    @if (error()) {
+      <p class="student-attendance__error">{{ error() }}</p>
+    }
+
+    <button class="student-attendance__submit" type="submit" [disabled]="submitting()">
+      {{ submitting() ? 'جاري الحفظ...' : 'تسجيل الحضور' }}
+    </button>
+  </form>
+
+  @if (loading()) {
+    <p class="student-attendance__message">جاري التحميل...</p>
+  } @else if (records().length === 0) {
+    <p class="student-attendance__message">لا يوجد سجل حضور بعد</p>
+  } @else {
+    <ul class="student-attendance__list">
+      @for (record of records(); track record.id) {
+        <li
+          class="student-attendance__item"
+          [class.student-attendance__item--present]="record.status === 'present'"
+          [class.student-attendance__item--absence]="record.status === 'absence'"
+          [class.student-attendance__item--pending]="record.status === 'pending'"
+        >
+          <span class="student-attendance__date">{{ record.date }}</span>
+          <span class="student-attendance__status">{{ statusLabel(record.status) }}</span>
+          @if (record.absence_reason) {
+            <span class="student-attendance__reason">{{ record.absence_reason }}</span>
+          }
+        </li>
+      }
+    </ul>
+  }
+</section>

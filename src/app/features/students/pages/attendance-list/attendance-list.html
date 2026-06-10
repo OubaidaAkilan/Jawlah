@@ -1,0 +1,64 @@
+<section class="attendance-list">
+  <header class="attendance-list__header">
+    <a class="attendance-list__back" routerLink="/students">← الطلاب</a>
+    <h1 class="attendance-list__title">الحضور</h1>
+    <p class="attendance-list__subtitle">{{ records().length }} سجل</p>
+  </header>
+
+  <form class="attendance-list__filters" [formGroup]="filters">
+    <label class="attendance-list__field attendance-list__field--date">
+      <span>التاريخ</span>
+      <input type="date" formControlName="date" />
+    </label>
+
+    <fieldset class="attendance-list__fieldset">
+      <legend>البرنامج</legend>
+      <div class="attendance-list__chips" role="group" aria-label="البرنامج">
+        @for (option of programOptions; track option.value) {
+          <button
+            type="button"
+            class="attendance-list__chip"
+            [class.attendance-list__chip--active]="filters.controls.program.value === option.value"
+            (click)="setProgram(option.value)"
+          >
+            {{ option.label }}
+          </button>
+        }
+      </div>
+    </fieldset>
+
+    <fieldset class="attendance-list__fieldset">
+      <legend>الحالة</legend>
+      <div class="attendance-list__chips" role="group" aria-label="الحالة">
+        @for (option of statusOptions; track option.value) {
+          <button
+            type="button"
+            class="attendance-list__chip"
+            [class.attendance-list__chip--active]="filters.controls.status.value === option.value"
+            (click)="setStatus(option.value)"
+          >
+            {{ option.label }}
+          </button>
+        }
+      </div>
+    </fieldset>
+  </form>
+
+  @if (loading()) {
+    <p class="attendance-list__message">جاري التحميل...</p>
+  } @else if (error()) {
+    <p class="attendance-list__message attendance-list__message--error">تعذر تحميل سجل الحضور</p>
+  } @else if (records().length === 0) {
+    <p class="attendance-list__message">لا يوجد سجلات لهذا اليوم والفلاتر المحددة</p>
+  } @else {
+    <div class="attendance-list__grid">
+      @for (record of records(); track record.id) {
+        <app-student-card
+          [student]="record.students"
+          [attendanceStatus]="record.status"
+          [absenceReason]="record.absence_reason"
+        />
+      }
+    </div>
+  }
+</section>

@@ -15,6 +15,9 @@ export interface Student {
   tiktok_url: string | null;
   snapchat_url: string | null;
   notes: string | null;
+  is_summer_program: boolean;
+  is_saturday_program: boolean;
+  is_unassigned_program: boolean;
   is_delete: boolean;
   created_at: string;
   updated_at: string;

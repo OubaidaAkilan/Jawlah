@@ -106,6 +106,40 @@
         </fieldset>
 
         <fieldset class="student-form__section">
+          <legend>البرامج</legend>
+
+          <label class="student-form__checkbox">
+            <input
+              type="checkbox"
+              formControlName="is_summer_program"
+              [disabled]="form.controls.is_unassigned_program.value"
+              (change)="onProgramChange('summer')"
+            />
+            <span>برنامج الصيف</span>
+          </label>
+
+          <label class="student-form__checkbox">
+            <input
+              type="checkbox"
+              formControlName="is_saturday_program"
+              [disabled]="form.controls.is_unassigned_program.value"
+              (change)="onProgramChange('saturday')"
+            />
+            <span>برنامج السبت</span>
+          </label>
+
+          <label class="student-form__checkbox">
+            <input
+              type="checkbox"
+              formControlName="is_unassigned_program"
+              [disabled]="form.controls.is_summer_program.value || form.controls.is_saturday_program.value"
+              (change)="onProgramChange('unassigned')"
+            />
+            <span>غير مسجل في برنامج</span>
+          </label>
+        </fieldset>
+
+        <fieldset class="student-form__section">
           <legend>حسابات التواصل (اختياري)</legend>
 
           <label class="student-form__field">

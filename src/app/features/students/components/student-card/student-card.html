@@ -1,13 +1,45 @@
-<article class="student-card">
-  <a class="student-card__link" [routerLink]="['/students', student().id]">
-    <div class="student-card__header">
+<article
+  class="student-card"
+  [class.student-card--present]="attendanceStatus() === 'present'"
+  [class.student-card--absence]="attendanceStatus() === 'absence'"
+  [class.student-card--pending]="attendanceStatus() === 'pending'"
+>
+  <a class="student-card__link" [routerLink]="['/students', student().id]">    <div class="student-card__header">
       <app-student-avatar [student]="student()" />
-      <h2 class="student-card__name">{{ student().full_name }}</h2>
+      <div class="student-card__info">
+        <h2 class="student-card__name">{{ student().full_name }}</h2>
+        @if (
+          student().is_unassigned_program ||
+          student().is_summer_program ||
+          student().is_saturday_program
+        ) {
+          <div class="student-card__programs">
+            @if (student().is_unassigned_program) {
+              <span class="student-card__program student-card__program--unassigned">غير مسجل</span>
+            } @else {
+              @if (student().is_summer_program) {
+                <span class="student-card__program">صيف</span>
+              }
+              @if (student().is_saturday_program) {
+                <span class="student-card__program">سبت</span>
+              }
+            }
+          </div>
+        }
+      </div>
     </div>
   </a>
 
-  <div class="student-card__actions">
-    <app-action-icon-button
+  @if (attendanceStatus(); as status) {
+    <div class="student-card__attendance">
+      <span class="student-card__badge">{{ statusLabel(status) }}</span>
+      @if (absenceReason()) {
+        <p class="student-card__reason">{{ absenceReason() }}</p>
+      }
+    </div>
+  }
+
+  <div class="student-card__actions">    <app-action-icon-button
       type="whatsapp"
       label="واتساب"
       [href]="getWhatsAppUrl(student())"
