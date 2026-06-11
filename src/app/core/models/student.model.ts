@@ -1,3 +1,5 @@
+export type CallResponseStatus = 'not_contacted' | 'no_answer' | 'contacted';
+
 export interface Student {
   id: string;
   student_photo: string | null;
@@ -18,6 +20,7 @@ export interface Student {
   is_summer_program: boolean;
   is_saturday_program: boolean;
   is_unassigned_program: boolean;
+  responded_to_call_status: CallResponseStatus;
   is_delete: boolean;
   created_at: string;
   updated_at: string;

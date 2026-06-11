@@ -51,6 +51,39 @@
           }
         </div>
       </fieldset>
+
+      <fieldset class="student-list__fieldset">
+        <legend>حالة الاتصال</legend>
+        <div class="student-list__chips" role="group" aria-label="حالة الاتصال">
+          @for (option of callStatusOptions; track option.value) {
+            <button
+              type="button"
+              class="student-list__chip"
+              [class.student-list__chip--active]="callStatus() === option.value"
+              (click)="setCallStatus(option.value)"
+            >
+              {{ option.label }}
+            </button>
+          }
+        </div>
+      </fieldset>
+
+      <button
+        type="button"
+        class="student-list__reset-btn"
+        [disabled]="resettingCallStatus()"
+        (click)="openResetConfirm()"
+      >
+        {{ resettingCallStatus() ? 'جاري إعادة التعيين...' : 'إعادة الكل إلى «لم يتم التواصل بعد»' }}
+      </button>
+
+      @if (resetError()) {
+        <p class="student-list__reset-error">{{ resetError() }}</p>
+      }
+
+      @if (callStatusError()) {
+        <p class="student-list__reset-error">{{ callStatusError() }}</p>
+      }
     </div>
   }
 
@@ -64,6 +97,8 @@
     <p class="student-list__message">
       @if (searchQuery().trim()) {
         لا يوجد نتائج للبحث
+      } @else if (callStatus() !== 'all') {
+        لا يوجد طلاب لهذه الحالة
       } @else {
         لا يوجد طلاب لهذا البرنامج
       }
@@ -71,8 +106,23 @@
   } @else {
     <div class="student-list__grid">
       @for (student of filteredStudents(); track student.id) {
-        <app-student-card [student]="student" />
+        <app-student-card
+          [student]="student"
+          [updatingCallStatus]="updatingStudentId() === student.id"
+          (callStatusChange)="onCallStatusChange(student, $event)"
+        />
       }
     </div>
   }
+  <app-confirm-dialog
+    [open]="resetConfirmOpen()"
+    title="إعادة تعيين حالة الاتصال"
+    message="سيتم تعيين جميع الطلاب إلى «لم يتم التواصل بعد». هل تريد المتابعة؟"
+    confirmLabel="نعم، أعد التعيين"
+    cancelLabel="إلغاء"
+    variant="danger"
+    [loading]="resettingCallStatus()"
+    (confirmed)="onResetConfirmed()"
+    (cancelled)="onResetCancelled()"
+  />
 </section>

@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { Student, StudentInsert, StudentUpdate } from '../models/student.model';
+import { CallResponseStatus, Student, StudentInsert, StudentUpdate } from '../models/student.model';
 import { normalizeJordanPhone } from '../utils/phone.util';
 import { SupabaseService } from './supabase.service';
 
@@ -16,7 +16,7 @@ export class StudentsService {
       .order('created_at', { ascending: false });
 
     if (error) throw error;
-    return data ?? [];
+    return (data ?? []).map((student) => this.normalizeStudent(student));
   }
 
   async getById(id: string): Promise<Student | null> {
@@ -28,7 +28,7 @@ export class StudentsService {
       .maybeSingle();
 
     if (error) throw error;
-    return data;
+    return data ? this.normalizeStudent(data) : null;
   }
 
   async create(student: StudentInsert): Promise<Student> {
@@ -39,7 +39,7 @@ export class StudentsService {
       .single();
 
     if (error) throw error;
-    return data;
+    return this.normalizeStudent(data);
   }
 
   async update(id: string, student: StudentUpdate): Promise<Student> {
@@ -51,7 +51,29 @@ export class StudentsService {
       .single();
 
     if (error) throw error;
-    return data;
+    return this.normalizeStudent(data);
+  }
+
+  async updateCallStatus(id: string, status: CallResponseStatus): Promise<Student> {
+    const { data, error } = await this.supabase
+      .from(this.table)
+      .update({ responded_to_call_status: status })
+      .eq('id', id)
+      .eq('is_delete', false)
+      .select()
+      .single();
+
+    if (error) throw error;
+    return this.normalizeStudent(data);
+  }
+
+  async resetAllCallStatus(): Promise<void> {
+    const { error } = await this.supabase
+      .from(this.table)
+      .update({ responded_to_call_status: 'not_contacted' })
+      .eq('is_delete', false);
+
+    if (error) throw error;
   }
 
   async delete(id: string): Promise<void> {
@@ -61,6 +83,13 @@ export class StudentsService {
       .eq('id', id);
 
     if (error) throw error;
+  }
+
+  private normalizeStudent(student: Student): Student {
+    return {
+      ...student,
+      responded_to_call_status: student.responded_to_call_status ?? 'not_contacted',
+    };
   }
 
   private normalizePhones<T extends Partial<StudentInsert>>(student: T): T {

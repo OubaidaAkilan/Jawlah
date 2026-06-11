@@ -158,7 +158,7 @@ export class StudentForm implements OnInit {
     this.saveConfirmOpen.set(false);
   }
 
-  private buildPayload(): StudentInsert {
+  private buildPayload(): Omit<StudentInsert, 'responded_to_call_status'> {
     const raw = this.form.getRawValue();
     const studentPhone = raw.student_phone_number.trim();
     const parentPhone = raw.parent_phone_number.trim();
@@ -199,7 +199,10 @@ export class StudentForm implements OnInit {
         const student = await this.studentsService.update(id, payload);
         await this.router.navigate(['/students', student.id]);
       } else {
-        const student = await this.studentsService.create(payload);
+        const student = await this.studentsService.create({
+          ...payload,
+          responded_to_call_status: 'not_contacted',
+        });
         await this.router.navigate(['/students', student.id]);
       }
     } catch {
