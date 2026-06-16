@@ -42,6 +42,7 @@ export class StudentForm implements OnInit {
     instagram_url: [''],
     tiktok_url: [''],
     snapchat_url: [''],
+    nickname: [''],
     notes: [''],
     is_summer_program: [false],
     is_saturday_program: [false],
@@ -86,6 +87,7 @@ export class StudentForm implements OnInit {
         instagram_url: student.instagram_url ?? '',
         tiktok_url: student.tiktok_url ?? '',
         snapchat_url: student.snapchat_url ?? '',
+        nickname: student.nickname ?? '',
         notes: student.notes ?? '',
         is_summer_program: student.is_summer_program ?? false,
         is_saturday_program: student.is_saturday_program ?? false,
@@ -178,6 +180,7 @@ export class StudentForm implements OnInit {
       instagram_url: raw.instagram_url.trim() || null,
       tiktok_url: raw.tiktok_url.trim() || null,
       snapchat_url: raw.snapchat_url.trim() || null,
+      nickname: raw.nickname.trim() || null,
       notes: raw.notes.trim() || null,
       ...normalizeProgramFlags({
         is_summer_program: raw.is_summer_program,

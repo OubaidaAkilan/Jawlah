@@ -37,4 +37,11 @@ export const routes: Routes = [
         (m) => m.StudentDetail
       ),
   },
+  {
+    path: 'messages/new',
+    loadComponent: () =>
+      import('./features/students/pages/send-message/send-message').then(
+        (m) => m.SendMessage
+      ),
+  },
 ];

@@ -16,6 +16,7 @@ export interface Student {
   instagram_url: string | null;
   tiktok_url: string | null;
   snapchat_url: string | null;
+  nickname: string | null;
   notes: string | null;
   is_summer_program: boolean;
   is_saturday_program: boolean;

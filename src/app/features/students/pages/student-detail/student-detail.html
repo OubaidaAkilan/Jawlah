@@ -81,6 +81,13 @@
           </div>
         }
 
+        @if (s.nickname?.trim()) {
+          <div class="student-detail__field">
+            <dt>اللقب</dt>
+            <dd>{{ s.nickname }}</dd>
+          </div>
+        }
+
         @if (s.student_phone_number) {
           <div class="student-detail__field">
             <dt>هاتف الطالب</dt>

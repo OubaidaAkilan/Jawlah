@@ -1,0 +1,480 @@
+@use '../../../../../styles/variables' as *;
+
+.send-msg {
+  min-height: 100dvh;
+  background: $color-background;
+  color: $color-paragraph;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  &__title {
+    color: $color-headline;
+    font-size: 1.25rem;
+    margin: 0;
+  }
+
+  &__back {
+    color: $color-accent-soft;
+    text-decoration: none;
+    font-size: 0.9rem;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  &__message {
+    text-align: center;
+    color: $color-paragraph;
+    padding: 32px 16px;
+
+    &--error {
+      color: $color-highlight;
+    }
+  }
+
+  &__filters {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: $color-background;
+    padding-bottom: 8px;
+  }
+
+  &__search {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 0.85rem;
+
+    &-field {
+      display: flex;
+      gap: 4px;
+    }
+
+    input {
+      flex: 1;
+      padding: 8px 12px;
+      border: 2px solid $color-stroke;
+      border-radius: 6px;
+      background: $color-headline;
+      color: #000;
+      font-size: 0.95rem;
+
+      &::placeholder {
+        color: #999;
+      }
+    }
+
+    &-clear {
+      background: none;
+      border: 2px solid $color-stroke;
+      border-radius: 6px;
+      color: $color-paragraph;
+      cursor: pointer;
+      padding: 4px 10px;
+      font-size: 1rem;
+    }
+  }
+
+  &__fieldset {
+    border: none;
+    padding: 0;
+    margin: 0;
+
+    legend {
+      font-size: 0.8rem;
+      margin-bottom: 4px;
+      opacity: 0.8;
+    }
+  }
+
+  &__chips {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  &__chip {
+    padding: 4px 14px;
+    border: 2px solid $color-stroke;
+    border-radius: 20px;
+    background: transparent;
+    color: $color-paragraph;
+    cursor: pointer;
+    font-size: 0.85rem;
+    white-space: nowrap;
+    transition: all 0.15s;
+
+    &--active {
+      background: $color-button;
+      color: $color-button-text;
+      border-color: $color-button;
+    }
+  }
+
+  &__selection {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+  }
+
+  &__count {
+    font-size: 0.85rem;
+    opacity: 0.8;
+  }
+
+  &__select-all {
+    background: none;
+    border: 2px solid $color-stroke;
+    border-radius: 6px;
+    color: $color-accent-soft;
+    cursor: pointer;
+    padding: 4px 12px;
+    font-size: 0.8rem;
+  }
+
+  &__students {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    max-height: 360px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+  }
+
+  &__student {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    border: 2px solid transparent;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    cursor: pointer;
+    transition: all 0.15s;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    &--selected {
+      border-color: $color-accent;
+      background: rgba($color-accent, 0.1);
+    }
+  }
+
+  &__checkbox {
+    width: 18px;
+    height: 18px;
+    accent-color: $color-accent;
+    cursor: pointer;
+  }
+
+  &__student-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    font-size: 0.85rem;
+  }
+
+  &__student-name {
+    color: $color-headline;
+    font-weight: 500;
+  }
+
+  &__student-nick {
+    opacity: 0.7;
+    font-size: 0.8rem;
+  }
+
+  &__student-program {
+    font-size: 0.75rem;
+    opacity: 0.6;
+  }
+
+  &__compose {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 8px;
+  }
+
+  &__message-label {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    font-size: 0.85rem;
+
+    small {
+      opacity: 0.7;
+      font-size: 0.8rem;
+
+      code {
+        background: rgba(255, 255, 255, 0.1);
+        padding: 1px 6px;
+        border-radius: 3px;
+        font-size: 0.85rem;
+      }
+    }
+  }
+
+  &__textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 2px solid $color-stroke;
+    border-radius: 8px;
+    background: $color-headline;
+    color: #000;
+    font-size: 0.95rem;
+    font-family: inherit;
+    resize: vertical;
+    box-sizing: border-box;
+  }
+
+  &__preview {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    padding: 8px 12px;
+
+    summary {
+      cursor: pointer;
+      font-size: 0.85rem;
+      opacity: 0.8;
+    }
+
+    &-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-top: 8px;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+
+    &-item {
+      font-size: 0.85rem;
+      padding: 4px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+
+      strong {
+        color: $color-headline;
+      }
+    }
+  }
+
+  &__error {
+    color: $color-highlight;
+    font-size: 0.85rem;
+  }
+
+  &__progress {
+    font-size: 0.85rem;
+    opacity: 0.8;
+  }
+
+  &__results {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    padding: 12px;
+    max-height: 250px;
+    overflow-y: auto;
+
+    h3 {
+      color: $color-headline;
+      margin: 0 0 8px;
+      font-size: 1rem;
+    }
+
+    p {
+      font-size: 0.85rem;
+      margin: 0 0 8px;
+    }
+  }
+
+  &__result {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.85rem;
+    padding: 4px 0;
+
+    &--fail {
+      color: $color-highlight;
+    }
+
+    small {
+      opacity: 0.7;
+    }
+  }
+
+  &__send-btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    background: $color-button;
+    color: $color-button-text;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.15s;
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    &:not(:disabled):hover {
+      opacity: 0.9;
+    }
+  }
+
+  &__whatsapp-setup {
+    display: flex;
+    justify-content: center;
+    padding: 32px 0;
+  }
+
+  &__whatsapp-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid $color-stroke;
+    border-radius: 12px;
+    padding: 32px 24px;
+    max-width: 420px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    text-align: center;
+  }
+
+  &__whatsapp-title {
+    color: $color-headline;
+    font-size: 1.2rem;
+    margin: 0;
+  }
+
+  &__whatsapp-instructions {
+    color: $color-paragraph;
+    font-size: 0.95rem;
+    margin: 0;
+  }
+
+  &__whatsapp-steps {
+    text-align: right;
+    font-size: 0.85rem;
+    color: $color-paragraph;
+    line-height: 1.8;
+    padding: 0 20px;
+    margin: 0;
+
+    strong {
+      color: $color-accent-soft;
+    }
+  }
+
+  &__qr-container {
+    background: #fff;
+    border-radius: 8px;
+    padding: 16px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 200px;
+    min-height: 200px;
+  }
+
+  &__qr-image {
+    display: block;
+    max-width: 100%;
+    height: auto;
+  }
+
+  &__qr-waiting {
+    color: #666;
+    font-size: 0.85rem;
+  }
+
+  &__qr-hint {
+    font-size: 0.8rem;
+    opacity: 0.6;
+    margin: 0;
+  }
+
+  &__whatsapp-message {
+    color: $color-paragraph;
+    font-size: 0.95rem;
+    margin: 0;
+  }
+
+  &__status-icon {
+    font-size: 2.5rem;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .material-icons {
+      font-size: 2rem;
+    }
+
+    &--loading {
+      background: rgba($color-accent, 0.15);
+      color: $color-accent;
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+
+    &--error {
+      background: rgba($color-highlight, 0.15);
+      color: $color-highlight;
+    }
+  }
+
+  &__retry-btn {
+    padding: 8px 24px;
+    border: 2px solid $color-button;
+    border-radius: 8px;
+    background: transparent;
+    color: $color-button;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.15s;
+
+    &:hover {
+      background: $color-button;
+      color: $color-button-text;
+    }
+  }
+
+  &__connected-badge {
+    background: rgba(76, 175, 80, 0.15);
+    color: #81c784;
+    border: 1px solid rgba(76, 175, 80, 0.3);
+    border-radius: 8px;
+    padding: 6px 14px;
+    font-size: 0.85rem;
+    text-align: center;
+  }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}

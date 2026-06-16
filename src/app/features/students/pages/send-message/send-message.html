@@ -1,0 +1,203 @@
+<section class="send-msg">
+  <header class="send-msg__header">
+    <h1 class="send-msg__title">إرسال رسالة واتساب</h1>
+    <a class="send-msg__back" routerLink="/students">← رجوع للقائمة</a>
+  </header>
+
+  @if (loading()) {
+    <p class="send-msg__message">جاري التحميل...</p>
+  } @else if (error()) {
+    <p class="send-msg__message send-msg__message--error">تعذر تحميل البيانات</p>
+  } @else if (whatsappStatus() === 'loading') {
+    <div class="send-msg__whatsapp-setup">
+      <div class="send-msg__whatsapp-card">
+        <div class="send-msg__status-icon send-msg__status-icon--loading">
+          <span class="material-icons" aria-hidden="true">whatsapp</span>
+        </div>
+        <p class="send-msg__whatsapp-message">{{ statusMessage() }}</p>
+      </div>
+    </div>
+
+  } @else if (whatsappStatus() === 'qr') {
+    <div class="send-msg__whatsapp-setup">
+      <div class="send-msg__whatsapp-card">
+        <h2 class="send-msg__whatsapp-title">اربط واتساب</h2>
+        <p class="send-msg__whatsapp-instructions">
+          امسح رمز QR هذا باستخدام واتساب على جوالك
+        </p>
+        <ol class="send-msg__whatsapp-steps">
+          <li>افتح واتساب على جوالك</li>
+          <li>اضغط على القائمة <strong>(⁝)</strong></li>
+          <li>اختر <strong>"الأجهزة المرتبطة"</strong></li>
+          <li>اضغط <strong>"ربط جهاز"</strong></li>
+          <li>امسح الرمز الظاهر أدناه</li>
+        </ol>
+        <div class="send-msg__qr-container">
+          @if (qrImage(); as img) {
+            <img class="send-msg__qr-image" [src]="img" alt="QR Code" />
+          } @else {
+            <p class="send-msg__qr-waiting">بانتظار توليد رمز QR...</p>
+          }
+        </div>
+        <p class="send-msg__qr-hint">سيتم تحديث الصفحة تلقائياً عند الاتصال</p>
+      </div>
+    </div>
+
+  } @else if (whatsappStatus() === 'error') {
+    <div class="send-msg__whatsapp-setup">
+      <div class="send-msg__whatsapp-card">
+        <div class="send-msg__status-icon send-msg__status-icon--error">
+          <span class="material-icons" aria-hidden="true">error</span>
+        </div>
+        <p class="send-msg__whatsapp-message">{{ statusMessage() }}</p>
+        <button type="button" class="send-msg__retry-btn" (click)="retryConnection()">
+          إعادة المحاولة
+        </button>
+      </div>
+    </div>
+
+  } @else if (whatsappStatus() === 'connected') {
+    <div class="send-msg__connected-badge">✓ متصل بخادم واتساب</div>
+
+    <div class="send-msg__filters">
+      <label class="send-msg__search">
+        <span>بحث بالاسم</span>
+        <div class="send-msg__search-field">
+          <input
+            type="search"
+            placeholder="ابحث عن طالب..."
+            [value]="searchQuery()"
+            (input)="onSearchInput($event)"
+          />
+          @if (searchQuery()) {
+            <button type="button" class="send-msg__search-clear" (click)="clearSearch()">×</button>
+          }
+        </div>
+      </label>
+
+      <fieldset class="send-msg__fieldset">
+        <legend>البرنامج</legend>
+        <div class="send-msg__chips" role="group">
+          @for (opt of programOptions; track opt.value) {
+            <button
+              type="button"
+              class="send-msg__chip"
+              [class.send-msg__chip--active]="program() === opt.value"
+              (click)="setProgram(opt.value)"
+            >{{ opt.label }}</button>
+          }
+        </div>
+      </fieldset>
+
+      <fieldset class="send-msg__fieldset">
+        <legend>حالة الاتصال</legend>
+        <div class="send-msg__chips" role="group">
+          @for (opt of callStatusOptions; track opt.value) {
+            <button
+              type="button"
+              class="send-msg__chip"
+              [class.send-msg__chip--active]="callStatus() === opt.value"
+              (click)="setCallStatus(opt.value)"
+            >{{ opt.label }}</button>
+          }
+        </div>
+      </fieldset>
+    </div>
+
+    @if (students().length > 0) {
+      <div class="send-msg__selection">
+        <span class="send-msg__count">تم اختيار {{ selectedCount() }} من {{ filteredCount() }} طالب</span>
+        <button type="button" class="send-msg__select-all" (click)="toggleAll()">
+          {{ allSelected() ? 'إلغاء تحديد الكل' : 'تحديد الكل' }}
+        </button>
+      </div>
+    }
+
+    @if (filteredStudents().length === 0) {
+      <p class="send-msg__message">لا يوجد طلاب مطابقين</p>
+    } @else {
+      <div class="send-msg__students">
+        @for (student of filteredStudents(); track student.id) {
+          <label class="send-msg__student" [class.send-msg__student--selected]="selectedIds().has(student.id)">
+            <input
+              type="checkbox"
+              class="send-msg__checkbox"
+              [checked]="selectedIds().has(student.id)"
+              (change)="toggleStudent(student.id)"
+            />
+            <app-student-avatar [student]="student" size="small" />
+            <div class="send-msg__student-info">
+              <span class="send-msg__student-name">{{ student.full_name }}</span>
+              @if (student.nickname) {
+                <span class="send-msg__student-nick">({{ student.nickname }})</span>
+              }
+              <span class="send-msg__student-program">
+                @if (student.is_summer_program) { صيف }
+                @else if (student.is_saturday_program) { سبت }
+                @else if (student.is_unassigned_program) { غير مسجل }
+              </span>
+            </div>
+          </label>
+        }
+      </div>
+    }
+
+    <div class="send-msg__compose">
+      <label class="send-msg__message-label">
+        <span>نص الرسالة</span>
+        <small>استخدم <code>{{ '{{' }}nickname{{ '}}' }}</code> لاستبدال اللقب تلقائياً</small>
+      </label>
+      <textarea
+        class="send-msg__textarea"
+        rows="5"
+        [placeholder]="textareaPlaceholder"
+        [value]="messageText()"
+        (input)="onMessageInput($event)"
+      ></textarea>
+
+      @if (messageText().trim() && selectedCount() > 0) {
+        <details class="send-msg__preview">
+          <summary>معاينة الرسالة ({{ selectedCount() }} طالب)</summary>
+          <div class="send-msg__preview-list">
+            @for (preview of previews(); track $index) {
+              <div class="send-msg__preview-item">
+                <strong>{{ preview.name }}:</strong>
+                <span>{{ preview.text }}</span>
+              </div>
+            }
+          </div>
+        </details>
+      }
+
+      @if (sendError()) {
+        <p class="send-msg__error">{{ sendError() }}</p>
+      }
+
+      @if (sendProgress() && !results()) {
+        <p class="send-msg__progress">{{ sendProgress() }}</p>
+      }
+
+      @if (results(); as r) {
+        <div class="send-msg__results">
+          <h3>نتائج الإرسال</h3>
+          <p>{{ r.filter(x => x.status === 'sent').length }} نجح، {{ r.filter(x => x.status === 'failed').length }} فشل</p>
+          @for (res of r; track res.studentId) {
+            <div class="send-msg__result" [class.send-msg__result--fail]="res.status === 'failed'">
+              <span>{{ res.nickname || res.phone }}</span>
+              <span>{{ res.status === 'sent' ? '✓' : '✗' }}</span>
+              @if (res.error) { <small>{{ res.error }}</small> }
+            </div>
+          }
+        </div>
+      }
+
+      <button
+        class="send-msg__send-btn"
+        [disabled]="sending() || selectedCount() === 0 || !messageText().trim()"
+        (click)="send()"
+      >
+        {{ sending() ? 'جارٍ الإرسال...' : 'إرسال إلى ' + selectedCount() + ' طالب' }}
+      </button>
+    </div>
+  }
+</section>
