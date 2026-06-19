@@ -1,0 +1,108 @@
+<section class="confirm">
+  @if (loading()) {
+    <div class="confirm__status">
+      <p class="confirm__message">جارٍ التحقق من الرابط...</p>
+    </div>
+  } @else if (error()) {
+    <div class="confirm__status">
+      <div class="confirm__icon confirm__icon--error">
+        <span class="material-icons" aria-hidden="true">error</span>
+      </div>
+      <p class="confirm__error-text">{{ error() }}</p>
+    </div>
+  } @else if (student(); as s) {
+    <div class="confirm__card">
+      <div class="confirm__card-header">
+        <div class="confirm__avatar">{{ s.nickname[0] }}</div>
+        <div class="confirm__student-info">
+          <h1 class="confirm__name">{{ s.full_name }}</h1>
+          <span class="confirm__nickname">{{ s.nickname }}</span>
+          <span class="confirm__program">{{ s.program }}</span>
+        </div>
+      </div>
+
+      <div class="confirm__date">
+        <span class="material-icons" aria-hidden="true">calendar_today</span>
+        <span>{{ date() }}</span>
+      </div>
+
+      @if (text()) {
+        <p class="confirm__admin-text">{{ text() }}</p>
+      }
+
+      @if (confirmed()) {
+        <div class="confirm__result">
+          <div class="confirm__result-icon confirm__result-icon--{{ confirmStatus() }}">
+            <span class="material-icons" aria-hidden="true">
+              {{ confirmStatus() === 'present' ? 'check_circle' : 'cancel' }}
+            </span>
+          </div>
+          <p class="confirm__result-text">
+            @if (confirmStatus() === 'present') {
+              تم تسجيل حضورك
+            } @else {
+              تم تسجيل غيابك
+            }
+          </p>
+        </div>
+
+        <div class="confirm__reconfirm-hint">
+          <p>يمكنك تغيير إجابتك باختيار الخيار الآخر أدناه</p>
+        </div>
+      } @else if (currentStatus(); as cs) {
+        <div class="confirm__current-status">
+          <p>
+            مسجل حالياً:
+            <strong>{{ cs === 'present' ? 'حاضر' : 'غائب' }}</strong>
+          </p>
+          <p class="confirm__reconfirm-hint">يمكنك تحديث إجابتك</p>
+        </div>
+      }
+
+      <div class="confirm__actions">
+        <button
+          type="button"
+          class="confirm__btn confirm__btn--present"
+          [disabled]="confirming() || (confirmed() && confirmStatus() === 'present')"
+          (click)="onPresent()"
+        >
+          <span class="material-icons" aria-hidden="true">check_circle</span>
+          تأكيد الحضور
+        </button>
+
+        <button
+          type="button"
+          class="confirm__btn confirm__btn--absence"
+          [disabled]="confirming() || (confirmed() && confirmStatus() === 'absence')"
+          (click)="onAbsence()"
+        >
+          <span class="material-icons" aria-hidden="true">cancel</span>
+          @if (showAbsenceReason()) { إرسال } @else { تأكيد الغياب }
+        </button>
+      </div>
+
+      @if (showAbsenceReason()) {
+        <div class="confirm__reason">
+          <label class="confirm__reason-label" for="absence-reason">
+            سبب الغياب <small>(اختياري)</small>
+          </label>
+          <textarea
+            id="absence-reason"
+            class="confirm__reason-input"
+            rows="3"
+            placeholder="اذكر سبب الغياب..."
+            [(ngModel)]="absenceReason"
+          ></textarea>
+        </div>
+      }
+
+      @if (confirmError()) {
+        <p class="confirm__error-text confirm__error-text--small">{{ confirmError() }}</p>
+      }
+
+      @if (confirming()) {
+        <p class="confirm__loading-text">جارٍ تأكيد الحضور...</p>
+      }
+    </div>
+  }
+</section>

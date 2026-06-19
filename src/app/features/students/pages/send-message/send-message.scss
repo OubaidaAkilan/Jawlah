@@ -472,6 +472,74 @@
     font-size: 0.85rem;
     text-align: center;
   }
+
+  &__option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    font-size: 0.85rem;
+    cursor: pointer;
+    padding: 8px 0;
+
+    small {
+      width: 100%;
+      opacity: 0.7;
+      font-size: 0.8rem;
+
+      code {
+        background: rgba(255, 255, 255, 0.1);
+        padding: 1px 6px;
+        border-radius: 3px;
+        font-size: 0.85rem;
+      }
+    }
+  }
+
+  &__option-checkbox {
+    width: 18px;
+    height: 18px;
+    accent-color: $color-accent;
+    cursor: pointer;
+  }
+
+  &__confirmation-options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+  }
+
+  &__field-label {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 0.85rem;
+
+    small {
+      opacity: 0.7;
+      font-size: 0.8rem;
+
+      code {
+        background: rgba(255, 255, 255, 0.1);
+        padding: 1px 6px;
+        border-radius: 3px;
+        font-size: 0.85rem;
+      }
+    }
+  }
+
+  &__input {
+    padding: 8px 12px;
+    border: 2px solid $color-stroke;
+    border-radius: 6px;
+    background: $color-headline;
+    color: #000;
+    font-size: 0.95rem;
+    font-family: inherit;
+  }
 }
 
 @keyframes pulse {

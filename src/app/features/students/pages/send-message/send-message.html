@@ -145,7 +145,7 @@
     <div class="send-msg__compose">
       <label class="send-msg__message-label">
         <span>نص الرسالة</span>
-        <small>استخدم <code>{{ '{{' }}nickname{{ '}}' }}</code> لاستبدال اللقب تلقائياً</small>
+        <small>استخدم <code>{{ '{{' }}nickname{{ '}}' }}</code> و <code>{{ '{{' }}date{{ '}}' }}</code> و <code>{{ '{{' }}confirmation_link{{ '}}' }}</code> للاستبدال التلقائي</small>
       </label>
       <textarea
         class="send-msg__textarea"
@@ -167,6 +167,43 @@
             }
           </div>
         </details>
+      }
+
+      <label class="send-msg__option">
+        <input
+          type="checkbox"
+          class="send-msg__option-checkbox"
+          [checked]="enableConfirmationLink()"
+          (change)="toggleConfirmationLink()"
+        />
+        <span>تضمين رابط تأكيد الحضور</span>
+        <small>استخدم <code>{{ '{{' }}confirmation_link{{ '}}' }}</code> في الرسالة</small>
+      </label>
+
+      @if (enableConfirmationLink()) {
+        <div class="send-msg__confirmation-options">
+          <label class="send-msg__field-label">
+            <span>التاريخ</span>
+            <input
+              type="date"
+              class="send-msg__input"
+              [value]="attendanceDate()"
+              (input)="onDateInput($event)"
+            />
+          </label>
+
+          <label class="send-msg__field-label">
+            <span>نص بطاقة التأكيد</span>
+            <small>سيظهر هذا النص للطالب عند فتح رابط التأكيد</small>
+            <textarea
+              class="send-msg__textarea"
+              rows="3"
+              [value]="confirmationText()"
+              (input)="onConfirmationTextInput($event)"
+              placeholder="نرجو تأكيد حضورك في برنامج يوم (التاريخ)"
+            ></textarea>
+          </label>
+        </div>
       }
 
       @if (sendError()) {

@@ -11,6 +11,7 @@ import {
   resolveCallStatus,
 } from '../../utils/call-status.util';
 import { PROGRAM_FILTER_OPTIONS, ProgramFilter } from '../../utils/program.util';
+import { todayDateString } from '../../utils/attendance.util';
 
 @Component({
   selector: 'app-send-message',
@@ -37,6 +38,10 @@ export class SendMessage implements OnInit, OnDestroy {
   protected readonly results = signal<SendResult[] | null>(null);
   protected readonly sendError = signal<string | null>(null);
 
+  protected readonly enableConfirmationLink = signal(false);
+  protected readonly attendanceDate = signal(todayDateString());
+  protected readonly confirmationText = signal('نرجو تأكيد حضورك في البرنامج');
+
   protected readonly whatsappStatus = signal<'loading' | 'qr' | 'connected' | 'error'>('loading');
   protected readonly qrImage = signal<string | null>(null);
   protected readonly statusMessage = signal('جارٍ الاتصال بخادم واتساب...');
@@ -45,7 +50,9 @@ export class SendMessage implements OnInit, OnDestroy {
   protected readonly programOptions = PROGRAM_FILTER_OPTIONS;
   protected readonly callStatusOptions = CALL_STATUS_FILTER_OPTIONS;
   protected readonly nicknameToken = '{{nickname}}';
-  protected readonly textareaPlaceholder = 'مرحباً {{nickname}}، نذكرك بموعد برنامج الصيف غداً...';
+  protected readonly confirmationLinkToken = '{{confirmation_link}}';
+  protected readonly dateToken = '{{date}}';
+  protected readonly textareaPlaceholder = 'مرحباً {{nickname}}، نذكرك بموعد برنامج يوم {{date}}...';
 
   protected readonly filteredStudents = computed(() => {
     let list = this.students();
@@ -74,13 +81,17 @@ export class SendMessage implements OnInit, OnDestroy {
 
   protected readonly previews = computed(() => {
     const msg = this.messageText();
+    const date = this.attendanceDate();
     if (!msg) return [];
 
     return this.filteredStudents()
       .filter((s) => this.selectedIds().has(s.id))
       .map((s) => ({
         name: s.full_name,
-        text: msg.replace(/\{\{nickname\}\}/g, s.nickname || s.full_name.split(' ')[0]),
+        text: msg
+          .replace(/\{\{nickname\}\}/g, s.nickname || s.full_name.split(' ')[0])
+          .replace(/\{\{date\}\}/g, date)
+          .replace(/\{\{confirmation_link\}\}/g, '[رابط التأكيد]'),
       }));
   });
 
@@ -103,6 +114,20 @@ export class SendMessage implements OnInit, OnDestroy {
   onMessageInput(event: Event): void {
     const target = event.target as HTMLTextAreaElement | null;
     if (target) this.messageText.set(target.value);
+  }
+
+  toggleConfirmationLink(): void {
+    this.enableConfirmationLink.update((v) => !v);
+  }
+
+  onDateInput(event: Event): void {
+    const target = event.target as HTMLInputElement | null;
+    if (target) this.attendanceDate.set(target.value);
+  }
+
+  onConfirmationTextInput(event: Event): void {
+    const target = event.target as HTMLTextAreaElement | null;
+    if (target) this.confirmationText.set(target.value);
   }
 
   toggleStudent(id: string): void {
@@ -140,7 +165,13 @@ export class SendMessage implements OnInit, OnDestroy {
     this.results.set(null);
 
     try {
-      const response = await this.messagingService.send(ids, msg);
+      const response = await this.messagingService.send(
+        ids,
+        msg,
+        this.enableConfirmationLink(),
+        this.attendanceDate(),
+        this.confirmationText()
+      );
       this.results.set(response.results);
       this.sendProgress.set(`تم: ${response.sent} رسالة، فشل: ${response.failed}`);
     } catch (err) {

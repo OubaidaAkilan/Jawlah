@@ -44,4 +44,11 @@ export const routes: Routes = [
         (m) => m.SendMessage
       ),
   },
+  {
+    path: 'attendance/confirm',
+    loadComponent: () =>
+      import('./features/students/pages/attendance-confirm/attendance-confirm').then(
+        (m) => m.AttendanceConfirm
+      ),
+  },
 ];

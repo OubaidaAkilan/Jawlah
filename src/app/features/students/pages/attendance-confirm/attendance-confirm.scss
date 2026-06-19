@@ -1,0 +1,253 @@
+@use '../../../../../styles/variables' as *;
+
+.confirm {
+  min-height: 100dvh;
+  background: $color-background;
+  color: $color-paragraph;
+  padding: 24px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  &__status {
+    text-align: center;
+    padding: 32px 16px;
+  }
+
+  &__message {
+    color: $color-paragraph;
+    font-size: 1rem;
+  }
+
+  &__icon {
+    font-size: 3rem;
+    margin-bottom: 12px;
+
+    .material-icons {
+      font-size: 3rem;
+    }
+
+    &--error {
+      color: $color-highlight;
+    }
+  }
+
+  &__card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid $color-stroke;
+    border-radius: 14px;
+    padding: 28px 24px;
+    max-width: 440px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  &__card-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  &__avatar {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: $color-accent;
+    color: $color-headline;
+    font-size: 1.5rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  &__student-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  &__name {
+    color: $color-headline;
+    font-size: 1.3rem;
+    margin: 0;
+  }
+
+  &__nickname {
+    font-size: 0.9rem;
+    opacity: 0.7;
+  }
+
+  &__program {
+    font-size: 0.8rem;
+    opacity: 0.6;
+  }
+
+  &__date {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1rem;
+    color: $color-accent-soft;
+
+    .material-icons {
+      font-size: 1.3rem;
+    }
+  }
+
+  &__admin-text {
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    padding: 14px 16px;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin: 0;
+    color: $color-paragraph;
+  }
+
+  &__result {
+    text-align: center;
+    padding: 12px;
+  }
+
+  &__result-icon {
+    font-size: 2.5rem;
+    margin-bottom: 8px;
+
+    .material-icons {
+      font-size: 2.5rem;
+    }
+
+    &--present {
+      color: #81c784;
+    }
+
+    &--absence {
+      color: $color-highlight;
+    }
+  }
+
+  &__result-text {
+    font-size: 1rem;
+    font-weight: 600;
+    color: $color-headline;
+    margin: 0;
+  }
+
+  &__current-status {
+    text-align: center;
+    font-size: 0.9rem;
+    padding: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+
+    strong {
+      color: $color-accent-soft;
+    }
+  }
+
+  &__reconfirm-hint {
+    text-align: center;
+    font-size: 0.8rem;
+    opacity: 0.6;
+    margin: 4px 0 0;
+  }
+
+  &__actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  &__btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 14px 24px;
+    border: 2px solid $color-stroke;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .material-icons {
+      font-size: 1.3rem;
+    }
+
+    &--present {
+      background: #2e7d32;
+      color: $color-headline;
+      border-color: #2e7d32;
+
+      &:hover:not(:disabled) {
+        background: #388e3c;
+      }
+    }
+
+    &--absence {
+      background: transparent;
+      color: $color-highlight;
+      border-color: $color-highlight;
+
+      &:hover:not(:disabled) {
+        background: rgba($color-highlight, 0.15);
+      }
+    }
+  }
+
+  &__reason {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  &__reason-label {
+    font-size: 0.85rem;
+
+    small {
+      opacity: 0.6;
+    }
+  }
+
+  &__reason-input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 2px solid $color-stroke;
+    border-radius: 8px;
+    background: $color-headline;
+    color: #000;
+    font-size: 0.95rem;
+    font-family: inherit;
+    resize: vertical;
+    box-sizing: border-box;
+  }
+
+  &__error-text {
+    color: $color-highlight;
+    font-size: 0.95rem;
+    text-align: center;
+    margin: 0;
+
+    &--small {
+      font-size: 0.85rem;
+    }
+  }
+
+  &__loading-text {
+    text-align: center;
+    font-size: 0.85rem;
+    opacity: 0.7;
+    margin: 0;
+  }
+}

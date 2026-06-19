@@ -202,7 +202,7 @@ export class WhatsAppService extends EventEmitter {
   }
 
   async sendMessages(
-    students: { id: string; nickname: string; phone: string }[],
+    students: { id: string; nickname: string; phone: string; personalizedMessage?: string }[],
     messageTemplate: string,
     options?: { delayBetween?: number; maxRetries?: number }
   ): Promise<SendResult[]> {
@@ -212,7 +212,7 @@ export class WhatsAppService extends EventEmitter {
 
     for (let i = 0; i < students.length; i++) {
       const student = students[i];
-      const text = messageTemplate.replace(/\{\{nickname\}\}/g, student.nickname);
+      const text = student.personalizedMessage ?? messageTemplate.replace(/\{\{nickname\}\}/g, student.nickname);
       let lastError: string | undefined;
 
       for (let attempt = 0; attempt <= maxRetries; attempt++) {
