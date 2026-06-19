@@ -45,7 +45,7 @@ export const routes: Routes = [
       ),
   },
   {
-    path: 'attendance/confirm',
+    path: 'c/:token',
     loadComponent: () =>
       import('./features/students/pages/attendance-confirm/attendance-confirm').then(
         (m) => m.AttendanceConfirm

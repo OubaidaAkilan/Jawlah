@@ -30,15 +30,6 @@ export interface VerifyLinkResponse {
   error?: string;
 }
 
-export interface ConfirmAttendanceRequest {
-  studentId: string;
-  date: string;
-  text: string;
-  sig: string;
-  status: 'present' | 'absence';
-  absenceReason?: string | null;
-}
-
 export interface ConfirmAttendanceResponse {
   success: boolean;
   status?: string;
@@ -49,7 +40,7 @@ export interface ConfirmAttendanceResponse {
 
 @Injectable({ providedIn: 'root' })
 export class MessagingService {
-  private readonly apiUrl = environment.backendUrl;
+  private readonly apiUrl = environment.apiUrl;
 
   async checkStatus(): Promise<{ ready: boolean; hasQr: boolean }> {
     const res = await fetch(`${this.apiUrl}/status`);
@@ -88,28 +79,25 @@ export class MessagingService {
     return res.json();
   }
 
-  async verifyConfirmationLink(
-    studentId: string,
-    date: string,
-    text: string,
-    sig: string
-  ): Promise<VerifyLinkResponse> {
+  async verifyConfirmationLink(token: string): Promise<VerifyLinkResponse> {
     const res = await fetch(`${this.apiUrl}/attendance/verify-link`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ studentId, date, text, sig }),
+      body: JSON.stringify({ token }),
     });
 
     return res.json();
   }
 
   async confirmAttendance(
-    req: ConfirmAttendanceRequest
+    token: string,
+    status: string,
+    absenceReason?: string | null
   ): Promise<ConfirmAttendanceResponse> {
     const res = await fetch(`${this.apiUrl}/attendance/confirm`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(req),
+      body: JSON.stringify({ token, status, absenceReason }),
     });
 
     return res.json();

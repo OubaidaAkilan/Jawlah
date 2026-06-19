@@ -34,37 +34,26 @@ export class AttendanceConfirm implements OnInit {
   protected readonly showAbsenceReason = signal(false);
   protected readonly absenceReason = signal('');
 
-  private studentId = '';
-  private sig = '';
+  private token = '';
 
   async ngOnInit(): Promise<void> {
-    const params = this.route.snapshot.queryParams;
-    this.studentId = params['student'] || '';
-    const date = params['date'] || '';
-    const text = params['text'] || '';
-    this.sig = params['sig'] || '';
+    this.token = this.route.snapshot.params['token'] || '';
 
-    if (!this.studentId || !date || !this.sig) {
+    if (!this.token) {
       this.error.set('رابط غير صالح');
       this.loading.set(false);
       return;
     }
 
-    this.date.set(date);
-    this.text.set(text);
-
     try {
-      const result = await this.messagingService.verifyConfirmationLink(
-        this.studentId,
-        date,
-        text,
-        this.sig
-      );
+      const result = await this.messagingService.verifyConfirmationLink(this.token);
 
       if (!result.valid || !result.student) {
         this.error.set(result.error || 'رابط غير صالح');
       } else {
         this.student.set(result.student);
+        this.date.set(result.date || '');
+        this.text.set(result.text || '');
         this.currentStatus.set(result.currentStatus || null);
         this.currentAbsenceReason.set(result.currentAbsenceReason || null);
       }
@@ -94,14 +83,11 @@ export class AttendanceConfirm implements OnInit {
     this.confirmError.set(null);
 
     try {
-      const result = await this.messagingService.confirmAttendance({
-        studentId: this.studentId,
-        date: this.date(),
-        text: this.text(),
-        sig: this.sig,
+      const result = await this.messagingService.confirmAttendance(
+        this.token,
         status,
-        absenceReason: status === 'absence' ? (this.absenceReason() || null) : null,
-      });
+        status === 'absence' ? (this.absenceReason() || null) : null
+      );
 
       if (result.success) {
         this.confirmed.set(true);

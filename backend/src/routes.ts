@@ -2,7 +2,7 @@ import { Router, Request, Response } from 'express';
 import QRCode from 'qrcode';
 import { supabase } from './supabase.client';
 import { whatsappService } from './whatsapp.service';
-import { generateConfirmationLink, verifyConfirmationToken } from './tokens';
+import { generateConfirmationLink, lookupConfirmationToken } from './tokens';
 
 export const router = Router();
 
@@ -63,7 +63,14 @@ router.post('/send', async (req: Request, res: Response) => {
     return;
   }
 
-  const recipients = students.map((s) => {
+  const recipients: {
+    id: string;
+    nickname: string;
+    phone: string;
+    personalizedMessage: string;
+  }[] = [];
+
+  for (const s of students) {
     const nickname = s.nickname || s.full_name.split(' ')[0];
     let personalizedMessage = message
       .replace(/\{\{nickname\}\}/g, nickname)
@@ -72,17 +79,17 @@ router.post('/send', async (req: Request, res: Response) => {
     if (enableConfirmationLink && date) {
       let text = (confirmationText || '').trim() || 'نرجو تأكيد حضورك في البرنامج';
       text = text.replace(/\{\{nickname\}\}/g, nickname).replace(/\{\{date\}\}/g, date);
-      const link = generateConfirmationLink(s.id, date, text);
+      const link = await generateConfirmationLink(s.id, date, text);
       personalizedMessage = personalizedMessage.replace(/\{\{confirmation_link\}\}/g, link);
     }
 
-    return {
+    recipients.push({
       id: s.id,
       nickname,
       phone: s.parent_phone_number,
       personalizedMessage,
-    };
-  });
+    });
+  }
 
   const results = await whatsappService.sendMessages(recipients, message, {
     delayBetween: 45000,
@@ -99,20 +106,15 @@ router.post('/send', async (req: Request, res: Response) => {
 });
 
 router.post('/attendance/verify-link', async (req: Request, res: Response) => {
-  const { studentId, date, text, sig } = req.body as {
-    studentId?: string;
-    date?: string;
-    text?: string;
-    sig?: string;
-  };
+  const { token } = req.body as { token?: string };
 
-  if (!studentId || !date || !sig) {
-    res.status(400).json({ valid: false, error: 'Missing required fields' });
+  if (!token) {
+    res.status(400).json({ valid: false, error: 'الرمز مطلوب' });
     return;
   }
 
-  const textValue = text || '';
-  if (!verifyConfirmationToken(studentId, date, textValue, sig)) {
+  const lookup = await lookupConfirmationToken(token);
+  if (!lookup) {
     res.status(400).json({ valid: false, error: 'رابط غير صالح أو منتهي الصلاحية' });
     return;
   }
@@ -120,7 +122,7 @@ router.post('/attendance/verify-link', async (req: Request, res: Response) => {
   const { data: student, error } = await supabase
     .from('students')
     .select('id, full_name, nickname, is_summer_program, is_saturday_program, is_unassigned_program')
-    .eq('id', studentId)
+    .eq('id', lookup.studentId)
     .eq('is_delete', false)
     .single();
 
@@ -137,8 +139,8 @@ router.post('/attendance/verify-link', async (req: Request, res: Response) => {
   const { data: existing } = await supabase
     .from('attendance')
     .select('status, absence_reason')
-    .eq('student_id', studentId)
-    .eq('date', date)
+    .eq('student_id', lookup.studentId)
+    .eq('date', lookup.date)
     .single();
 
   res.json({
@@ -148,24 +150,21 @@ router.post('/attendance/verify-link', async (req: Request, res: Response) => {
       nickname: student.nickname || student.full_name.split(' ')[0],
       program,
     },
-    date,
-    text: textValue,
+    date: lookup.date,
+    text: lookup.adminText,
     currentStatus: existing?.status || null,
     currentAbsenceReason: existing?.absence_reason || null,
   });
 });
 
 router.post('/attendance/confirm', async (req: Request, res: Response) => {
-  const { studentId, date, text, sig, status, absenceReason } = req.body as {
-    studentId?: string;
-    date?: string;
-    text?: string;
-    sig?: string;
+  const { token, status, absenceReason } = req.body as {
+    token?: string;
     status?: string;
     absenceReason?: string | null;
   };
 
-  if (!studentId || !date || !sig || !status) {
+  if (!token || !status) {
     res.status(400).json({ success: false, error: 'Missing required fields' });
     return;
   }
@@ -175,8 +174,8 @@ router.post('/attendance/confirm', async (req: Request, res: Response) => {
     return;
   }
 
-  const textValue = text || '';
-  if (!verifyConfirmationToken(studentId, date, textValue, sig)) {
+  const lookup = await lookupConfirmationToken(token);
+  if (!lookup) {
     res.status(400).json({ success: false, error: 'رابط غير صالح أو منتهي الصلاحية' });
     return;
   }
@@ -184,7 +183,7 @@ router.post('/attendance/confirm', async (req: Request, res: Response) => {
   const { data: student, error: studentError } = await supabase
     .from('students')
     .select('id')
-    .eq('id', studentId)
+    .eq('id', lookup.studentId)
     .eq('is_delete', false)
     .single();
 
@@ -196,15 +195,15 @@ router.post('/attendance/confirm', async (req: Request, res: Response) => {
   const { data: existing } = await supabase
     .from('attendance')
     .select('id, status')
-    .eq('student_id', studentId)
-    .eq('date', date)
+    .eq('student_id', lookup.studentId)
+    .eq('date', lookup.date)
     .single();
 
   const previousStatus = existing?.status || null;
 
   const record = {
-    student_id: studentId,
-    date,
+    student_id: lookup.studentId,
+    date: lookup.date,
     status,
     absence_reason: status === 'absence' ? (absenceReason || null) : null,
   };

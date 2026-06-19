@@ -1,28 +1,50 @@
 import crypto from 'crypto';
-const SECRET = process.env.ATTENDANCE_SECRET;
+import { supabase } from './supabase.client';
 const APP_URL = (process.env.APP_URL || 'http://localhost:4200').replace(/\/+$/, '');
-function getSecret() {
-    if (!SECRET)
-        throw new Error('ATTENDANCE_SECRET environment variable is required');
-    return SECRET;
+function generateShortToken() {
+    const chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+    const bytes = crypto.randomBytes(6);
+    let token = '';
+    for (let i = 0; i < 6; i++) {
+        token += chars[bytes[i] % 62];
+    }
+    return token;
 }
-export function generateConfirmationLink(studentId, date, adminText) {
-    const secret = getSecret();
-    const data = `${studentId}|${date}|${adminText}`;
-    const sig = crypto.createHmac('sha256', secret).update(data).digest('base64url');
-    const params = new URLSearchParams({
-        student: studentId,
+export async function generateConfirmationLink(studentId, date, adminText) {
+    let token;
+    let attempts = 0;
+    do {
+        token = generateShortToken();
+        const { data: existing } = await supabase
+            .from('confirmation_tokens')
+            .select('token')
+            .eq('token', token)
+            .single();
+        if (!existing)
+            break;
+        attempts++;
+    } while (attempts < 5);
+    const { error } = await supabase.from('confirmation_tokens').insert({
+        token,
+        student_id: studentId,
         date,
-        text: adminText,
-        sig,
+        admin_text: adminText,
     });
-    return `${APP_URL}/attendance/confirm?${params.toString()}`;
+    if (error)
+        throw new Error('Failed to store confirmation token');
+    return `${APP_URL}/c/${token}`;
 }
-export function verifyConfirmationToken(studentId, date, adminText, sig) {
-    const secret = getSecret();
-    const data = `${studentId}|${date}|${adminText}`;
-    const expected = crypto.createHmac('sha256', secret).update(data).digest('base64url');
-    if (sig.length !== expected.length)
-        return false;
-    return crypto.timingSafeEqual(Buffer.from(sig), Buffer.from(expected));
+export async function lookupConfirmationToken(token) {
+    const { data, error } = await supabase
+        .from('confirmation_tokens')
+        .select('student_id, date, admin_text')
+        .eq('token', token)
+        .single();
+    if (error || !data)
+        return null;
+    return {
+        studentId: data.student_id,
+        date: data.date,
+        adminText: data.admin_text,
+    };
 }

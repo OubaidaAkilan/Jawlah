@@ -15,8 +15,7 @@
       <div class="confirm__card-header">
         <div class="confirm__avatar">{{ s.nickname[0] }}</div>
         <div class="confirm__student-info">
-          <h1 class="confirm__name">{{ s.full_name }}</h1>
-          <span class="confirm__nickname">{{ s.nickname }}</span>
+          <h1 class="confirm__name">{{ s.nickname }}</h1>
           <span class="confirm__program">{{ s.program }}</span>
         </div>
       </div>
@@ -55,7 +54,6 @@
             مسجل حالياً:
             <strong>{{ cs === 'present' ? 'حاضر' : 'غائب' }}</strong>
           </p>
-          <p class="confirm__reconfirm-hint">يمكنك تحديث إجابتك</p>
         </div>
       }
 
@@ -63,7 +61,7 @@
         <button
           type="button"
           class="confirm__btn confirm__btn--present"
-          [disabled]="confirming() || (confirmed() && confirmStatus() === 'present')"
+          [disabled]="confirming() || currentStatus() === 'present'"
           (click)="onPresent()"
         >
           <span class="material-icons" aria-hidden="true">check_circle</span>
@@ -73,7 +71,7 @@
         <button
           type="button"
           class="confirm__btn confirm__btn--absence"
-          [disabled]="confirming() || (confirmed() && confirmStatus() === 'absence')"
+          [disabled]="confirming() || currentStatus() === 'absence'"
           (click)="onAbsence()"
         >
           <span class="material-icons" aria-hidden="true">cancel</span>

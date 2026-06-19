@@ -1,2 +1,6 @@
-export declare function generateConfirmationLink(studentId: string, date: string, adminText: string): string;
-export declare function verifyConfirmationToken(studentId: string, date: string, adminText: string, sig: string): boolean;
+export declare function generateConfirmationLink(studentId: string, date: string, adminText: string): Promise<string>;
+export declare function lookupConfirmationToken(token: string): Promise<{
+    studentId: string;
+    date: string;
+    adminText: string;
+} | null>;
