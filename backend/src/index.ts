@@ -6,9 +6,14 @@ import { whatsappService } from './whatsapp.service';
 
 const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3001;
 
+const corsOrigins = (process.env.CORS_ORIGINS ?? 'http://localhost:4200')
+  .split(',')
+  .map((origin) => origin.trim())
+  .filter(Boolean);
+
 const app = express();
 
-app.use(cors({ origin: ['http://localhost:4200'] }));
+app.use(cors({ origin: corsOrigins }));
 app.use(express.json());
 app.use('/api', router);
 

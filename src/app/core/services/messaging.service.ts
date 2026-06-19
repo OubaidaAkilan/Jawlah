@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { environment } from '../../../environments/environment';
 
 export interface SendResult {
   studentId: string;
@@ -48,7 +49,7 @@ export interface ConfirmAttendanceResponse {
 
 @Injectable({ providedIn: 'root' })
 export class MessagingService {
-  private readonly apiUrl = 'http://localhost:3001/api';
+  private readonly apiUrl = environment.backendUrl;
 
   async checkStatus(): Promise<{ ready: boolean; hasQr: boolean }> {
     const res = await fetch(`${this.apiUrl}/status`);
